@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <meta charset="UTF-8">
+    <title>Search books</title>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <meta name="viewport" content="width=device-width">
+    
+<style>  
+    
+    
+    
+    
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 30px;
+  background-color:#dda0dd;       /*背景*/
+  color: #fff;
+  
+}
+
+header {
+  background-color: darkblue;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  color: #fff;
+  font-family: 'Estrangelo Edessa';
+}
+
+main {
+  border-bottom: 1px solid #ccc;
+  font-family: 'Estrangelo Edessa';
+}
+
+h2{
+  font-size:16px;
+}
+
+p {
+  font-size: 100%;
+  text-align: center;
+  border-bottom: 1px solid #fff;
+  height: 100px;
+  font-family: 'Estrangelo Edessa';
+}
+
+ul {
+  padding: 0;
+  /*border-top: 1px solid #000000;*/
+  display: table;
+  /* 定義 */
+  table-layout: fixed;
+  width: 100%;
+}
+
+li {
+  text-align: center;
+  list-style-type: none; /*点を消す*/
+  cursor: pointer;
+}
+
+
+textarea{
+  margin: 3%;
+  width: 30%;
+  height: 30px;
+  font-size:50%;
+  box-shadow: 3px 3px 3px 3px #555;
+}
+        
+#query{
+  font-size: 16px;
+  background-color:#d8bfd8; 　　　　　　　　　　　　　/*検索欄*/
+  color: #d8bfd8;
+  font-family: 'Batang';
+}   
+        
+#mybtn{
+    background-color: #d8bfd8;               /*ボタン*/
+    font-family:'Batang';
+}
+   
+</style>
+    
+
+</head>
+
+<body>
+    <h1>Search books</h1>
+    <input id="query" type="text">
+    <button id="mybtn">Click</button>
+    <center>
+        <div id="contents"></div>
+    </center>
+
+    <script>
+        "use strict";
+        /* global $ loadSheets */
+        $(function() {
+            $("#mybtn").on("click", showdata);
+
+            function showdata() {
+                let query = $("#query").val();
+                $.getJSON(
+                    //"https://www.googleapis.com/books/v1/volumes?q=" + query,
+                    "http://web.fujimura.com/ko/books.php?q=" + query,
+                    function(data) {
+                        console.log(data);
+                        console.log(data.items[0].volumeInfo.imageLinks.thumbnail);
+                        console.log(data.items[0].volumeInfo.title);
+
+                        $("#contents").append("<ul><img src='" + data.items[0].volumeInfo.imageLinks.thumbnail + "'/>");
+                        $("#contents").append("<li>タイトル：" + data.items[0].volumeInfo.title + "～" + data.items[0].volumeInfo.subtitle + "～</li><br>");
+                        $("#contents").append("<li>発行日：" + data.items[0].volumeInfo.publishedDate + "</li></ul>");
+                    });
+            }
+        });
+        
+ 
+
+    /* global $ loadSheets */
+  
+         "use strict";//こっから
+      // unsupported.
+      if (!"SpeechSynthesisUtterance" in window) {
+          alert("Speech synthesis(音声合成) APIには未対応です.");
+          //return;
+      }
+      // 発話機能をインスタンス化
+      var msg = new SpeechSynthesisUtterance();
+
+        
+      $("#mybtn").on("click",function() {
+        // 発話実行
+        msg.volume = 1.0; // 音量 min 0 ~ max 1
+        msg.rate = 1.0; // 速度 min 0 ~ max 10
+        msg.pitch = 1.2; // 音程 min 0 ~ max 2
+
+        //msg.text = $("#mybtn").text(); // 話す中身
+        //msg.text = $('#contents').text();
+        msg.text = $("#query").val();
+        //msg.text = $("contents").val();
+        msg.lang = "ja-JP"; // en-US or ja-JP
+
+        speechSynthesis.speak(msg);
+
+        // 終了時の処理
+        msg.onend = function (event) {
+          console.log("喋った時間：" + event.elapsedTime + "s");
+        }
+      });//ここまで
+        
+        
+        
+        $("#mybtn").on("click",showdata);
+      
+      async function showdata () {
+        let data = await loadSheets('s1316259!A2:C5');//sample sheet A1からD10
+        console.log(data.values[0][0]);
+        $("#contents").append("<img width='200px' src='"+data.values[0][2]+"'/>");
+        $("#contents2").append(data.values[0][0]);//0行目の2列目
+          
+      }
+   
+        
+        
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+
+</body>
+</html>
